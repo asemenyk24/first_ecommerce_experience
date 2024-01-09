@@ -3,12 +3,10 @@ from .models import *
 from django.http import JsonResponse
 import json
 import datetime
-from .utility import cookie_cart, cart_data, guest_order
-from django.contrib.auth.forms import UserCreationForm
+from .utility import cart_data, guest_order
 from .forms import CreateCustomerForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-
 
 
 def store(request):
@@ -77,7 +75,7 @@ def process_order(request):
         order.complete = True
     order.save()
 
-    if order.shipping == True:
+    if order.shipping:
         ShippingAddress.objects.create(
             customer=customer,
             order=order,
@@ -91,42 +89,48 @@ def process_order(request):
 
 
 def register_user(request):
-    data = cart_data(request)
-    cart_items = data['cart_items']
-    form = CreateCustomerForm()
-    if request.method == 'POST':
-        form = CreateCustomerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created, ' + user)
-            user_id = User.objects.get(username=user)
-            email = form.cleaned_data.get('email')
-            customer, created = Customer.objects.get_or_create(user=user_id, name=user, email=email)
-            return redirect('user_login')
+    if request.user.is_authenticated:
+        return redirect('store')
+    else:
+        data = cart_data(request)
+        cart_items = data['cart_items']
+        form = CreateCustomerForm()
+        if request.method == 'POST':
+            form = CreateCustomerForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, 'Account was created, ' + user)
+                user_id = User.objects.get(username=user)
+                email = form.cleaned_data.get('email')
+                customer, created = Customer.objects.get_or_create(user=user_id, name=user, email=email)
+                return redirect('user_login')
 
     context = {'form': form, 'cart_items': cart_items}
     return render(request, 'store/register.html', context)
 
 
 def login_user(request):
-    data = cart_data(request)
-    cart_items = data['cart_items']
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+    if request.user.is_authenticated:
+        return redirect('store')
+    else:
+        data = cart_data(request)
+        cart_items = data['cart_items']
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            return redirect('store')
-        else:
-            messages.info(request, 'Username OR password is incorrect!')
-            context = {'cart_items': cart_items}
-            return render(request, 'store/login.html', context)
+            if user is not None:
+                login(request, user)
+                return redirect('store')
+            else:
+                messages.info(request, 'Username OR password is incorrect!')
+                context = {'cart_items': cart_items}
+                return render(request, 'store/login.html', context)
 
-    context = {'cart_items': cart_items}
-    return render(request, 'store/login.html', context)
+        context = {'cart_items': cart_items}
+        return render(request, 'store/login.html', context)
 
 
 def logout_user(request):

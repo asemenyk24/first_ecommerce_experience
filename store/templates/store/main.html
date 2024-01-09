@@ -70,8 +70,8 @@
                 </li>
             </ul>
               <div class="form-inline my-2 my-lg-0">
-                  <a href="{% url 'register_user' %}" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Register</a>
-                  <a href="{% url 'user_login' %}" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Login</a>
+                  <a href="{% url 'register_user' %}" id="auth_register" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Register</a>
+                  <a href="{% url 'user_login' %}" id="auth_login" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Login</a>
                   <a href="{% url 'user_logout' %}" id="logout_btn" class="btn btn-warning" style="border-radius: 12px">Logout</a>
                   <a href="{% url 'cart' %}">
                       <img id="cart-icon" src="{% static 'images/cart.png' %}">
@@ -102,6 +102,10 @@
             if (logged_user == 'AnonymousUser'){
                 document.getElementById('logout_btn').classList.add("hidden");
                 document.getElementById('logged_hello').classList.add("hidden");
+            }
+            if (logged_user != 'AnonymousUser'){
+                document.getElementById('auth_register').classList.add("hidden");
+                document.getElementById('auth_login').classList.add("hidden");
             }
         </script>
      </body>
