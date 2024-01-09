@@ -9,6 +9,11 @@
         <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+        <style>
+            html, body{
+                background: #E0FFFF !important;
+            }
+        </style>
         <script type="text/javascript">
             var user = '{{request.user}}'
             function getToken(name){
@@ -57,14 +62,19 @@
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="{% url 'store' %}">Dungeon<span class="sr-only">(current)</span></a>
-              </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'store' %}">Dungeon<span class="sr-only">(current)</span></a>
+                </li>
+                <li>
+                    <a id="logged_hello" class="nav-link" href="#">Hello, {{request.user}}<span class="sr-only">(current)</span></a>
+                </li>
             </ul>
               <div class="form-inline my-2 my-lg-0">
-                <a href="#" class="btn btn-warning">Login</a>
-                <a href="{% url 'cart' %}">
-                    <img id="cart-icon" src="{% static 'images/cart.png' %}">
+                  <a href="{% url 'register_user' %}" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Register</a>
+                  <a href="{% url 'user_login' %}" class="btn btn-warning" style="margin-right: 10px; border-radius: 12px">Login</a>
+                  <a href="{% url 'user_logout' %}" id="logout_btn" class="btn btn-warning" style="border-radius: 12px">Logout</a>
+                  <a href="{% url 'cart' %}">
+                      <img id="cart-icon" src="{% static 'images/cart.png' %}">
                 </a>
                 <p id="cart-total">{{cart_items}}</p>
             </div>
@@ -87,5 +97,12 @@
         sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
                 crossorigin="anonymous"></script>
         <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+        <script>
+            var logged_user = '{{ request.user }}'
+            if (logged_user == 'AnonymousUser'){
+                document.getElementById('logout_btn').classList.add("hidden");
+                document.getElementById('logged_hello').classList.add("hidden");
+            }
+        </script>
      </body>
 </html>
