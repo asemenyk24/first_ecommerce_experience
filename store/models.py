@@ -15,6 +15,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
     price = models.DecimalField(max_digits=9, decimal_places=2)
     digital = models.BooleanField(default=False, null=True, blank=False)
+    detail = models.TextField(null=True, blank=True)
     # Product image.
     image = models.ImageField(null=True, blank=True)
 

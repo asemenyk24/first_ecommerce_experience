@@ -136,3 +136,12 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('user_login')
+
+
+def product_detail(request, pk):
+    data = cart_data(request)
+    cart_items = data['cart_items']
+    product = Product.objects.get(id=pk)
+
+    context = {'cart_items': cart_items, 'product': product}
+    return render(request, 'store/detail.html', context)
