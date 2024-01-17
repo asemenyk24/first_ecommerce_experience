@@ -14,7 +14,7 @@ SECRET_KEY = config('SECRET_KEY', default='')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -71,7 +71,10 @@ DATABASES = {
         'NAME': 'ecommerce_db',
         'USER': 'lifeless',
         'PASSWORD': '56a78k12b34c',
-        'HOST': '127.0.0.1',
+        # For docker container
+        'HOST': 'pgdb',
+        # For local with postgres
+        # 'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
